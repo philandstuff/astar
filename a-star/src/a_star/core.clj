@@ -12,12 +12,11 @@
 
 (defn get-children [parent, h]
   (let [parent-x (x parent)
-        parent-y (y parent)
-        new-locations [(Location. (inc parent-x) parent-y)
-                       (Location. (dec parent-x) parent-y)
-                       (Location. parent-x (inc parent-y))
-                       (Location. parent-x (dec parent-y))]]
-    (map #(Node. % parent (h %)) new-locations)))
+        parent-y (y parent)]
+    [(Location. (inc parent-x) parent-y)
+     (Location. (dec parent-x) parent-y)
+     (Location. parent-x (inc parent-y))
+     (Location. parent-x (dec parent-y))]))
 
 (defn distance [end node]
   (let [dx (- (:x node) (:x end))
@@ -42,12 +41,11 @@
            closed #{}]
       (if (seq open)
         (let [current (first open)]
-          (cond
-            (= (:location current) end)
+          (if (= (:location current) end)
             (find-path current)
-            (contains? closed (:location current))
-            (recur (disj open current) closed)
-            :else (recur (into (disj open current) (get-children current h)) (conj closed (:location current)))))
+            (let [next-locs (remove closed (get-children current h))]
+              (recur (into (disj open current) (map #(->Node % current (h %)) next-locs))
+                     (conj closed (:location current))))))
         "No path found"))))
 
 (defn -main []
