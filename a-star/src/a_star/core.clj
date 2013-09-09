@@ -31,11 +31,7 @@
       :else new-path)))
 
 (defn compy [a b]
-  (let [c (compare (:h a) (:h b))]
-    (if (not= c 0)
-      c
-      (let [x (compare (x a) (x b))]
-        (if (not= x 0) x (compare (y a) (y b)))))))
+  (compare ((juxt :h x y) a) ((juxt :h x y) b)))
 
 (defn distance-from-end [end]
   (partial distance end))
