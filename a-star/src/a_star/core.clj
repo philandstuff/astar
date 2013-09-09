@@ -40,8 +40,7 @@
   (let [h (distance-from-end end) start-node (Node. start nil (h start))]
     (loop [open (sorted-set-by compy start-node)
            closed #{}]
-      (cond
-        (seq open)
+      (if (seq open)
         (let [current (first open)]
           (cond
             (= (:location current) end)
@@ -49,7 +48,7 @@
             (contains? closed (:location current))
             (recur (disj open current) closed)
             :else (recur (into (disj open current) (get-children current h)) (conj closed (:location current)))))
-        :else "No path found"))))
+        "No path found"))))
 
 (defn -main []
   (let [start (Location. 0 0)
