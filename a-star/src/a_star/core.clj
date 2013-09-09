@@ -24,11 +24,11 @@
         dy (- (:y node) (:y end))]
     (Math/sqrt (+ (* dx dx) (* dy dy)))))
 
-(defn find-path [node path]
-  (let [new-path (cons {:x (x node) :y (y node)} path)]
-    (cond (:parent node)
-      (recur (:parent node) new-path)
-      :else new-path)))
+(defn find-path [node]
+  (reverse
+   (for [node (iterate :parent node)
+         :while node]
+     {:x (x node) :y (y node)})))
 
 (defn compy [a b]
   (compare ((juxt :h x y) a) ((juxt :h x y) b)))
@@ -44,7 +44,7 @@
         (let [current (first open)]
           (cond
             (= (:location current) end)
-            (find-path current [])
+            (find-path current)
             (contains? closed (:location current))
             (recur (disj open current) closed)
             :else (recur (into (disj open current) (get-children current h)) (conj closed (:location current)))))
