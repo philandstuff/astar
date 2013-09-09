@@ -1,4 +1,4 @@
-(ns a-star.core (:gen-class ))
+(ns a-star.core)
 
 (defrecord Location [x y])
 
